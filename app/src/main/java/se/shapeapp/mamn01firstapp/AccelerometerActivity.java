@@ -7,10 +7,6 @@ import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
@@ -19,61 +15,52 @@ import android.widget.Toast;
 
 public class AccelerometerActivity extends Activity implements SensorEventListener {
 
+    private SensorManager sensorManager;
+    private boolean color = false;
+    private View view;
+    private long lastUpdate;
 
-        private SensorManager sensorManager;
-        private boolean color = false;
-        private View view;
-        private long lastUpdate;
+    /** Called when the activity is first created. */
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        requestWindowFeature(Window.FEATURE_NO_TITLE);
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
+                WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
-        /** Called when the activity is first created. */
-        @Override
-        public void onCreate(Bundle savedInstanceState) {
-            requestWindowFeature(Window.FEATURE_NO_TITLE);
-            getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
-                    WindowManager.LayoutParams.FLAG_FULLSCREEN);
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_accelerometer);
+        view = findViewById(R.id.textView);
+        view.setBackgroundColor(Color.GREEN);
 
-            super.onCreate(savedInstanceState);
-            setContentView(R.layout.activity_accelerometer);
-            view = findViewById(R.id.textView);
-            view.setBackgroundColor(Color.GREEN);
+        sensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
+        lastUpdate = System.currentTimeMillis();
+    }
 
-            sensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
-            lastUpdate = System.currentTimeMillis();
+    @Override
+    public void onSensorChanged(SensorEvent event) {
+        if (event.sensor.getType() == Sensor.TYPE_ACCELEROMETER) {
+            getAccelerometer(event);
         }
-
-        @Override
-        public void onSensorChanged(SensorEvent event) {
-            if (event.sensor.getType() == Sensor.TYPE_ACCELEROMETER) {
-                getAccelerometer(event);
-            }
-
-        }
+    }
 
     private void getAccelerometer(SensorEvent event) {
         float[] values = event.values;
         // Movement
-        float x = values[0];
-        float y = values[1];
-        float z = values[2];
+        float x = Math.round(values[0] * 1000) / 1000;
+        float y = Math.round(values[1] * 1000) / 1000;
+        float z = Math.round(values[2] * 1000) / 1000;
+        TextView coordTextView = (TextView) findViewById(R.id.xyz_coordinates);
+        coordTextView.setText("Y: " + String.valueOf(y) + ", X: " + String.valueOf(x) + ", Z: " + String.valueOf(z));
 
-        TextView yt = (TextView) findViewById(R.id.ytextview);
-        TextView xt = (TextView) findViewById(R.id.xtextview);
-        TextView zt = (TextView) findViewById(R.id.ztextview);
-
-        yt.setText(String.valueOf(y));
-        xt.setText(String.valueOf(x));
-        zt.setText(String.valueOf(z));
-
-
-
-        float accelationSquareRoot = (x * x + y * y + z * z)
+        float accelerationSquareRoot = (x * x + y * y + z * z)
                 / (SensorManager.GRAVITY_EARTH * SensorManager.GRAVITY_EARTH);
-        long actualTime = event.timestamp;
-        if (accelationSquareRoot >= 2) //
+        long actualTime = System.currentTimeMillis();
+        if (accelerationSquareRoot >= 2) //
         {
-            if (actualTime - lastUpdate < 200) {
+            if (Math.abs(actualTime - lastUpdate) < 500) {
                 return;
             }
+            System.out.println("Actual: " + actualTime + ", last: " + lastUpdate);
             lastUpdate = actualTime;
             Toast.makeText(this, "Device was shuffed", Toast.LENGTH_SHORT)
                     .show();
@@ -88,7 +75,7 @@ public class AccelerometerActivity extends Activity implements SensorEventListen
 
     @Override
     public void onAccuracyChanged(Sensor sensor, int accuracy) {
-
+        // Do nothing.
     }
 
     @Override
@@ -107,76 +94,4 @@ public class AccelerometerActivity extends Activity implements SensorEventListen
         super.onPause();
         sensorManager.unregisterListener(this);
     }
-
-
-
-
-
-
-
-
-
-    /*
-    private final SensorManager mSensorManager;
-    private final Sensor mAccelerometer;
-
-
-    public AccelerometerActivity(){
-        mSensorManager = (SensorManager)getSystemService(SENSOR_SERVICE);
-        mAccelerometer = mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
-
-        gravity = new float[3];
-        linear_acceleration = new float[3];
-    }
-
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_accelerometer);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        });
-    }
-
-    protected void onResume() {
-        super.onResume();
-        mSensorManager.registerListener(this, mAccelerometer, SensorManager.SENSOR_DELAY_NORMAL);
-    }
-
-    protected void onPause() {
-        super.onPause();
-        mSensorManager.unregisterListener(this);
-    }
-
-    public void onAccuracyChanged(Sensor sensor, int accuracy) {
-    }
-
-
-    private float[] gravity;
-    private float[] linear_acceleration;
-
-    public void onSensorChanged(SensorEvent event) {
-
-        // alpha is calculated as t / (t + dT)
-        // with t, the low-pass filter's time-constant
-        // and dT, the event delivery rate
-
-        final float alpha = 0.8f;
-
-        gravity[0] = alpha * gravity[0] + (1 - alpha) * event.values[0];
-        gravity[1] = alpha * gravity[1] + (1 - alpha) * event.values[1];
-        gravity[2] = alpha * gravity[2] + (1 - alpha) * event.values[2];
-
-        linear_acceleration[0] = event.values[0] - gravity[0];
-        linear_acceleration[1] = event.values[1] - gravity[1];
-        linear_acceleration[2] = event.values[2] - gravity[2];
-    }
-*/
 }

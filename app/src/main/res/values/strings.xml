@@ -13,4 +13,5 @@
     <string name="yyyy">YYYY</string>
     <string name="accelerometer">Accelerometer</string>
     <string name="compass">Compass</string>
+    <string name="x_xx_y_yy_z_zz">X: XX, Y: YY, Z: ZZ</string>
 </resources>
