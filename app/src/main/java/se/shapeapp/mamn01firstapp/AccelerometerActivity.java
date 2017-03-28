@@ -19,6 +19,7 @@ public class AccelerometerActivity extends Activity implements SensorEventListen
     private boolean color = false;
     private View view;
     private long lastUpdate;
+    private TextView coordTextView;
 
     /** Called when the activity is first created. */
     @Override
@@ -31,7 +32,7 @@ public class AccelerometerActivity extends Activity implements SensorEventListen
         setContentView(R.layout.activity_accelerometer);
         view = findViewById(R.id.textView);
         view.setBackgroundColor(Color.GREEN);
-
+        coordTextView = (TextView) findViewById(R.id.xyz_coordinates);
         sensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
         lastUpdate = System.currentTimeMillis();
     }
@@ -49,7 +50,6 @@ public class AccelerometerActivity extends Activity implements SensorEventListen
         float x = (float) Math.floor(values[0] * 1000) / 1000;
         float y = (float) Math.floor(values[1] * 1000) / 1000;
         float z = (float) Math.floor(values[2] * 1000) / 1000;
-        TextView coordTextView = (TextView) findViewById(R.id.xyz_coordinates);
         coordTextView.setText("Y: " + String.valueOf(y) + ", X: " + String.valueOf(x) + ", Z: " + String.valueOf(z));
 
         float accelerationSquareRoot = (x * x + y * y + z * z)
@@ -60,7 +60,6 @@ public class AccelerometerActivity extends Activity implements SensorEventListen
             if (Math.abs(actualTime - lastUpdate) < 500) {
                 return;
             }
-            System.out.println("Actual: " + actualTime + ", last: " + lastUpdate);
             lastUpdate = actualTime;
             Toast.makeText(this, "Device was shuffed", Toast.LENGTH_SHORT)
                     .show();

@@ -102,7 +102,6 @@ public class CompassActivity extends Activity implements SensorEventListener {
                     public void run() {
                         genTone(1000 - (200 * Math.abs(mOrientation[0])) );
                         handler.post(new Runnable() {
-
                             public void run() {
                                 playSound();
                             }
