@@ -2,4 +2,15 @@
     <string name="app_name">MAMN01FirstApp</string>
     <string name="edit_message">Enter a message</string>
     <string name="button_send">Send</string>
+    <string name="title_activity_accelerometer">AccelerometerActivity</string>
+    <string name="title_activity_compass">CompassActivity</string>
+    <string name="shake_to_get_a_toast_and_to_switch_color">Shake to get a toast and to switch color</string>
+    <string name="z">Z:</string>
+    <string name="x">X:</string>
+    <string name="y">Y:</string>
+    <string name="zzzz">ZZZZ</string>
+    <string name="xxxx">XXXX</string>
+    <string name="yyyy">YYYY</string>
+    <string name="accelerometer">Accelerometer</string>
+    <string name="compass">Compass</string>
 </resources>
