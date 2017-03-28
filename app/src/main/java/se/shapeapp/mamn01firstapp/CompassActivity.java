@@ -6,7 +6,6 @@ import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
-import android.media.AudioAttributes;
 import android.media.AudioFormat;
 import android.media.AudioManager;
 import android.media.AudioTrack;
@@ -35,7 +34,6 @@ public class CompassActivity extends Activity implements SensorEventListener {
     private TextView tvHeading;
     private Vibrator v;
     private long lastUpdate;
-    private long currentTime;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -91,7 +89,7 @@ public class CompassActivity extends Activity implements SensorEventListener {
             mPointer.startAnimation(ra);
             mCurrentDegree = -azimuthInDegrees;
 
-            currentTime = System.currentTimeMillis();
+            long currentTime = System.currentTimeMillis();
             if(Math.abs(lastUpdate - currentTime) > 1000){
                 lastUpdate = currentTime;
                 // Vibrate when orientation close to North pole.
@@ -156,6 +154,7 @@ public class CompassActivity extends Activity implements SensorEventListener {
             e.printStackTrace();
         }
     }
+
     static final float ALPHA = 0.25f; // if ALPHA = 1 OR 0, no filter applies.
     protected float[] lowPass( float[] input, float[] output ) {
         if ( output == null ) return input;
