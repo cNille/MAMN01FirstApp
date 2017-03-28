@@ -46,9 +46,9 @@ public class AccelerometerActivity extends Activity implements SensorEventListen
     private void getAccelerometer(SensorEvent event) {
         float[] values = event.values;
         // Movement
-        float x = Math.round(values[0] * 1000) / 1000;
-        float y = Math.round(values[1] * 1000) / 1000;
-        float z = Math.round(values[2] * 1000) / 1000;
+        float x = (float) Math.floor(values[0] * 1000) / 1000;
+        float y = (float) Math.floor(values[1] * 1000) / 1000;
+        float z = (float) Math.floor(values[2] * 1000) / 1000;
         TextView coordTextView = (TextView) findViewById(R.id.xyz_coordinates);
         coordTextView.setText("Y: " + String.valueOf(y) + ", X: " + String.valueOf(x) + ", Z: " + String.valueOf(z));
 
